@@ -1,0 +1,49 @@
+
+set -e
+
+if (( $# != 1 )); then
+    echo "Illegal number of parameters"
+    echo "usage: services start"
+    exit 1
+fi
+
+stoppingContainers () {
+	echo "Stopping containers"
+	docker-compose --log-level ERROR -f docker-compose.yml  -p fiware down -v --remove-orphans
+}
+
+startContainers () {
+	echo "Starting containers"
+  export IDM_HTTPS_ENABLED=false
+  docker-compose --log-level ERROR -f docker-compose.yml -p fiware up -d --remove-orphans
+	echo ""
+}
+
+displayServices () {
+	echo ""
+	docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" --filter name=fiware-*
+	echo ""
+}
+
+
+command="$1"
+case "${command}" in
+  "start")
+  stoppingContainers
+  startContainers
+  export ORION_URL="http://orion-proxy:1027" 
+  displayServices
+  ;;
+  "create")
+		echo "Pulling Docker images"
+		docker-compose --log-level ERROR -f docker-compose.yml -p fiware pull
+		;;
+  "stop")
+  stoppingContainers
+  ;;
+	*)
+    echo "Command not Found."
+    echo "usage: services [create|start|stop]"
+    exit 127;
+    ;;
+esac
