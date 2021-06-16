@@ -17,7 +17,7 @@ export const getUsers = async (
   try {
     const fetchRes = await axios
       .get(`${USER_URL}`, {
-        headers: { "X-Auth-Token": `${req.headers["x-auth-token"]}` },
+        headers: { "X-Auth-Token": `${req.headers["x-keyrock-token"]}` },
       })
       .then((response) => response.data);
     res.status(200).send(fetchRes);
@@ -42,7 +42,7 @@ export const postCreateUser = async (
         `${USER_URL}`,
         { user: req.body },
         {
-          headers: { "X-Auth-Token": `${req.headers["x-auth-token"]}` },
+          headers: { "X-Auth-Token": `${req.headers["x-keyrock-token"]}` },
         }
       )
       .then((response) => response.data);
@@ -69,7 +69,7 @@ export const putUpdateUser = async (
         `${USER_URL}/${req.params.id}`,
         { user: req.body },
         {
-          headers: { "X-Auth-Token": `${req.headers["x-auth-token"]}` },
+          headers: { "X-Auth-Token": `${req.headers["x-keyrock-token"]}` },
         }
       )
       .then((response) => response.data);
@@ -93,7 +93,7 @@ export const deleteUser = async (
   try {
     const fetchRes = await axios
       .delete(`${USER_URL}/${req.params.id}`, {
-        headers: { "X-Auth-Token": `${req.headers["x-auth-token"]}` },
+        headers: { "X-Auth-Token": `${req.headers["x-keyrock-token"]}` },
       })
       .then((response) => response);
     res.status(200).send(fetchRes);

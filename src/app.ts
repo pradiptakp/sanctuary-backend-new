@@ -80,17 +80,17 @@ startSeed();
  * Routes declaration
  */
 
-app.delete("/api/device", controllers.deleteDevice);
+app.delete("/api/device/:id", controllers.deleteDevice);
 app.get("/api/device", controllers.getDevices);
 app.get("/api/device/:id", controllers.getDeviceDetail);
 app.post("/api/device", controllers.postCreateDevice);
 app.post("/api/device/switch", controllers.postSwitchDevice);
 
 app.get("/api/room", controllers.getRooms);
-app.post("/api/room/:id", controllers.getRoomDetail);
+app.get("/api/room/:id", controllers.getRoomDetail);
 app.post("/api/room", controllers.postCreateRoom);
-app.put("/api/room", controllers.putUpdateRoom);
-app.delete("/api/room", controllers.deleteRoom);
+app.put("/api/room/:id", controllers.putUpdateRoom);
+app.delete("/api/room/:id", controllers.deleteRoom);
 
 app.get("/api/user", controllers.getUsers);
 app.delete("/api/user", controllers.deleteUser);

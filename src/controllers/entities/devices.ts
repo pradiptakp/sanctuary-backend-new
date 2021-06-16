@@ -8,6 +8,8 @@ import {
   REGISTRATION_URL,
 } from "../../utils/constants";
 import { io } from "../../../src/app";
+import { Device, DeviceType } from "../../types";
+import { getLastID } from "../../utils/common";
 
 /**
  * Get devices.
@@ -126,16 +128,74 @@ export const postSwitchDevice = async (
  */
 
 export const postCreateDevice = async (
-  req: Request,
+  req: Request<{}, {}, { roomId: string; type: DeviceType }>,
   res: Response,
   next: NextFunction
 ) => {
   try {
+    const fetchDevices = await axios
+      .get<Device[]>(
+        `${ENTITIES_URL}?type=${req.body.type}&options=keyValues`,
+        {
+          headers: {
+            "X-Auth-Token": `${req.headers["x-auth-token"]}`,
+            "fiware-service": "openiot",
+            "fiware-servicepath": "/",
+          },
+        }
+      )
+      .then((response) => response.data);
+
+    const deviceId = fetchDevices.length > 0 ? getLastID(fetchDevices) : "001";
+
     const fetchRes = await axios
       .post(
         DEVICES_URL,
         {
-          devices: [req.body],
+          devices: [
+            {
+              entity_name: `urn:ngsi-ld:${req.body.type}:${deviceId}`,
+              device_id: `${req.body.type.toLowerCase()}${deviceId}`,
+              entity_type: req.body.type,
+              protocol: "PDI-IoTA-UltraLight",
+              transport: "HTTP",
+              endpoint: `http://206.189.149.121:3001/iot/${req.body.type.toLowerCase()}${deviceId}`,
+              commands: [
+                {
+                  name: "on",
+                  type: "command",
+                },
+                {
+                  name: "off",
+                  type: "command",
+                },
+              ],
+              attributes: [
+                {
+                  object_id: "s",
+                  name: "state",
+                  type: "Text",
+                },
+                {
+                  object_id: "p",
+                  name: "power",
+                  type: "Integer",
+                },
+                {
+                  object_id: "m",
+                  name: "monthly_usage",
+                  type: "Integer",
+                },
+              ],
+              static_attributes: [
+                {
+                  name: "refRoom",
+                  type: "Relationship",
+                  value: req.body.roomId,
+                },
+              ],
+            },
+          ],
         },
         {
           headers: {
@@ -150,12 +210,12 @@ export const postCreateDevice = async (
     await axios.post(
       REGISTRATION_URL,
       {
-        description: `${req.body.entity_type} Commands`,
+        description: `${req.body.type} Commands`,
         dataProvided: {
           entities: [
             {
-              id: req.body.entity_name,
-              type: req.body.entity_type,
+              id: `urn:ngsi-ld:${req.body.type}:${deviceId}`,
+              type: req.body.type,
             },
           ],
           attrs: ["on", "off"],
@@ -185,13 +245,15 @@ export const postCreateDevice = async (
  */
 
 export const deleteDevice = async (
-  req: Request,
+  req: Request<{ id: string }, {}, {}>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const fetchRes = await axios
-      .delete(`${DEVICES_URL}/${req.params.id}`, {
+    const iotDeviceId = req.params.id.substr(12).replace(":", "").toLowerCase();
+
+    await axios
+      .delete(`${ENTITIES_URL}/${req.params.id}`, {
         headers: {
           "X-Auth-Token": `${req.headers["x-auth-token"]}`,
           "fiware-service": "openiot",
@@ -200,7 +262,17 @@ export const deleteDevice = async (
       })
       .then((response) => response.data);
 
-    res.status(200).send(fetchRes);
+    await axios
+      .delete(`${DEVICES_URL}/${iotDeviceId}`, {
+        headers: {
+          "X-Auth-Token": `${req.headers["x-auth-token"]}`,
+          "fiware-service": "openiot",
+          "fiware-servicepath": "/",
+        },
+      })
+      .then((response) => response.data);
+
+    res.status(200).send();
   } catch (err) {
     next(err);
   }
