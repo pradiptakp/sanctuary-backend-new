@@ -66,7 +66,7 @@ if (!isProduction) {
 
 app.use(express.static("public"));
 
-app.use((_req, _res, next) => {
+app.use((_req, res, next) => {
   next();
 });
 
@@ -79,6 +79,8 @@ startSeed();
 /**
  * Routes declaration
  */
+
+app.get("/api/dashboard-info", controllers.getDashboardInfo);
 
 app.delete("/api/device/:id", controllers.deleteDevice);
 app.get("/api/device", controllers.getDevices);
@@ -93,8 +95,9 @@ app.put("/api/room/:id", controllers.putUpdateRoom);
 app.delete("/api/room/:id", controllers.deleteRoom);
 
 app.get("/api/user", controllers.getUsers);
-app.delete("/api/user", controllers.deleteUser);
-app.put("/api/user", controllers.putUpdateUser);
+app.get("/api/user/:id", controllers.getUserDetail);
+app.delete("/api/user/:id", controllers.deleteUser);
+app.put("/api/user/:id", controllers.putUpdateUser);
 app.post("/api/user", controllers.postCreateUser);
 
 app.post("/api/auth/login", controllers.postLogin);

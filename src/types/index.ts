@@ -13,6 +13,7 @@ export type UserData = {
     admin: boolean;
   };
 };
+
 export type DeviceType = "Lamp" | "Lock" | "Temperature";
 
 export type Room = {
@@ -53,4 +54,10 @@ export type User = {
   date_password: string;
   description: string;
   website: string | null;
+};
+
+export type DashboardData = {
+  roomsTotal: number;
+  devicesTotal: number;
+  usersTotal: number;
 };
