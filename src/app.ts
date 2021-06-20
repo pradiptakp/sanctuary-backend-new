@@ -66,7 +66,7 @@ if (!isProduction) {
 
 app.use(express.static("public"));
 
-app.use((_req, res, next) => {
+app.use((_req, _res, next) => {
   next();
 });
 
@@ -87,6 +87,10 @@ app.get("/api/device", controllers.getDevices);
 app.get("/api/device/:id", controllers.getDeviceDetail);
 app.post("/api/device", controllers.postCreateDevice);
 app.post("/api/device/switch/:id", controllers.postSwitchDevice);
+app.post(
+  "/api/device/update-temperature/:id",
+  controllers.postUpdateTemperature
+);
 
 app.get("/api/room", controllers.getRooms);
 app.get("/api/room/:id", controllers.getRoomDetail);

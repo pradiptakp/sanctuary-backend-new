@@ -4,6 +4,7 @@ import { Response, Request, NextFunction } from "express";
 import axios from "axios";
 import {
   DEVICES_URL,
+  ENTITIES_BYPASS_URL,
   ENTITIES_URL,
   REGISTRATION_URL,
 } from "../../utils/constants";
@@ -123,6 +124,42 @@ export const postSwitchDevice = async (
 };
 
 /**
+ * Post switch device state.
+ * @route POST /api/device/update-temperature
+ */
+
+export const postUpdateTemperature = async (
+  req: Request<{ id: string }, {}, string>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const fetchRes = await axios
+      .put(
+        `${ENTITIES_BYPASS_URL}/${req.params.id}/attrs/temperature/value`,
+        req.body,
+        {
+          headers: {
+            "Content-Type": "text/plain",
+            "fiware-service": "openiot",
+            "fiware-servicepath": "/",
+          },
+        }
+      )
+      .then((response) => {
+        io.emit("update_temperature", {
+          id: req.params.id,
+          temperature: req.body,
+        });
+        return response.data;
+      });
+    res.status(200).send(fetchRes);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
  * Create device.
  * @route POST /api/device
  */
@@ -160,33 +197,45 @@ export const postCreateDevice = async (
               protocol: "PDI-IoTA-UltraLight",
               transport: "HTTP",
               endpoint: `http://206.189.149.121:3001/iot/${req.body.type.toLowerCase()}${deviceId}`,
-              commands: [
-                {
-                  name: "on",
-                  type: "command",
-                },
-                {
-                  name: "off",
-                  type: "command",
-                },
-              ],
-              attributes: [
-                {
-                  object_id: "s",
-                  name: "state",
-                  type: "Text",
-                },
-                {
-                  object_id: "p",
-                  name: "power",
-                  type: "Integer",
-                },
-                {
-                  object_id: "m",
-                  name: "monthly_usage",
-                  type: "Integer",
-                },
-              ],
+              commands:
+                req.body.type.includes("Lamp") || req.body.type.includes("Lock")
+                  ? [
+                      {
+                        name: "on",
+                        type: "command",
+                      },
+                      {
+                        name: "off",
+                        type: "command",
+                      },
+                    ]
+                  : undefined,
+              attributes:
+                req.body.type.includes("Lamp") || req.body.type.includes("Lock")
+                  ? [
+                      {
+                        object_id: "s",
+                        name: "state",
+                        type: "Text",
+                      },
+                      {
+                        object_id: "p",
+                        name: "power",
+                        type: "Integer",
+                      },
+                      {
+                        object_id: "m",
+                        name: "monthly_usage",
+                        type: "Integer",
+                      },
+                    ]
+                  : [
+                      {
+                        object_id: "t",
+                        name: "temperature",
+                        type: "Text",
+                      },
+                    ],
               static_attributes: [
                 {
                   name: "refRoom",
