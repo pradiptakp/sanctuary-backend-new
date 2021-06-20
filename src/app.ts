@@ -86,7 +86,7 @@ app.delete("/api/device/:id", controllers.deleteDevice);
 app.get("/api/device", controllers.getDevices);
 app.get("/api/device/:id", controllers.getDeviceDetail);
 app.post("/api/device", controllers.postCreateDevice);
-app.post("/api/device/switch", controllers.postSwitchDevice);
+app.post("/api/device/switch/:id", controllers.postSwitchDevice);
 
 app.get("/api/room", controllers.getRooms);
 app.get("/api/room/:id", controllers.getRoomDetail);

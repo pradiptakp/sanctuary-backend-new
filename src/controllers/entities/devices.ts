@@ -74,15 +74,15 @@ export const getDeviceDetail = async (
  */
 
 export const postSwitchDevice = async (
-  req: Request,
+  req: Request<{ id: string }, {}, { state: boolean }>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const fetchRes = await axios
       .patch(
-        `${ENTITIES_URL}/${req.body.id}/attrs`,
-        req.body.on
+        `${ENTITIES_URL}/${req.params.id}/attrs`,
+        req.body.state
           ? {
               on: {
                 type: "command",
@@ -111,8 +111,8 @@ export const postSwitchDevice = async (
       )
       .then((response) => {
         io.emit("switch", {
-          id: req.body.id,
-          on: req.body.on,
+          id: req.params.id,
+          state: req.body.state,
         });
         return response.data;
       });
