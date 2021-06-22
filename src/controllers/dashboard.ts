@@ -8,7 +8,7 @@ import {
   LOGIN_URL,
   USER_URL,
 } from "../utils/constants";
-import { Room, User } from "../types";
+import { Device, Room, User } from "../types";
 
 /**
  * Login API.
@@ -27,9 +27,16 @@ export const getDashboardInfo = async (
       .then((response) => response.data);
 
     const fetchDevices = await axios
-      .get<Room[]>(`${ENTITIES_URL}?type=Room&options=keyValues`, {
-        headers: { "X-Auth-Token": `${req.headers["x-auth-token"]}` },
-      })
+      .get<Device[]>(
+        `${ENTITIES_URL}?type=Lamp,Lock,Temperature&options=keyValues`,
+        {
+          headers: {
+            "X-Auth-Token": `${req.headers["x-auth-token"]}`,
+            "fiware-service": "openiot",
+            "fiware-servicepath": "/",
+          },
+        }
+      )
       .then((response) => response.data);
 
     const fetchUser = await axios
