@@ -72,8 +72,6 @@ LOCK TABLES `auth_token` WRITE;
 /*!40000 ALTER TABLE `auth_token` DISABLE KEYS */;
 INSERT INTO `auth_token` VALUES 
 ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','2036-07-30 12:04:45',1,'aaaaaaaa-good-0000-0000-000000000000',NULL),
-('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','2036-07-30 12:38:13',1,'bbbbbbbb-good-0000-0000-000000000000',NULL),
-('cccccccc-cccc-cccc-cccc-cccccccccccc','2036-07-31 09:36:13',1,'cccccccc-good-0000-0000-000000000000',NULL),
 ('51f2e380-c959-4dee-a0af-380f730137c3','2036-07-30 13:02:37',1,'admin',NULL);
 /*!40000 ALTER TABLE `auth_token` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -210,13 +208,7 @@ LOCK TABLES `oauth_access_token` WRITE;
 /*!40000 ALTER TABLE `oauth_access_token` DISABLE KEYS */;
 INSERT INTO `oauth_access_token` VALUES 
 ('15682667caa4bb5ac15056fee3836b2980288bf2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','admin',NULL,NULL),
-('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','angga',NULL,NULL),
-('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb','bob',NULL,NULL),
-('cccccccccccccccccccccccccccccccccccccccc','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'cccccccc-cccc-cccc-cccc-cccccccccccc','charlie',NULL,NULL),
-('d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d1d1d1d1-dddd-dddd-dddd-d1d1d1d1d1d1','detective1',NULL,NULL),
-('d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'d2d2d2d2-dddd-dddd-dddd-d2d2d2d2d2d2','detective2',NULL,NULL),
-('m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m1m1m1m1-mmmm-mmmm-mmmm-m1m1m1m1m1m1','manager1',NULL,NULL),
-('m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2m2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'m2m2m2m2-mmmm-mmmm-mmmm-m2m2m2m2m2m2','manager2',NULL,NULL);
+('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','angga',NULL,NULL);
 
 /*!40000 ALTER TABLE `oauth_access_token` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -488,9 +480,8 @@ CREATE TABLE `role` (
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
 INSERT INTO `role` VALUES 
-('security-role-0000-0000-000000000000','Security Team',0,'tutorial-dckr-site-0000-xpresswebapp'),
-('managers-role-0000-0000-000000000000','Management',0,'tutorial-dckr-site-0000-xpresswebapp'),
-('provider','Provider',1,'idm_admin_app'),('purchaser','Purchaser',1,'idm_admin_app');
+('admin-role-0000-0000-000000000000','Admin',0,'tutorial-dckr-site-0000-xpresswebapp'),
+('user-role-0000-0000-000000000000','User',0,'tutorial-dckr-site-0000-xpresswebapp');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -532,11 +523,7 @@ INSERT INTO `role_assignment` VALUES
 (3,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'admin'),
 (4,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'96154659-cb3b-4d2d-afef-18d6aec0518e'),
 (5,NULL,'tutorial-dckr-site-0000-xpresswebapp','provider',NULL,'aaaaaaaa-good-0000-0000-000000000000'),
-(6,NULL,'trusted-dckr-app-0000-000000000000','provider',NULL,'aaaaaaaa-good-0000-0000-000000000000'),
-(10,NULL,'tutorial-dckr-site-0000-xpresswebapp','security-role-0000-0000-000000000000',NULL,'cccccccc-good-0000-0000-000000000000'),
-(11,'member','tutorial-dckr-site-0000-xpresswebapp','security-role-0000-0000-000000000000','security-team-0000-0000-000000000000',NULL),
-(12,NULL,'tutorial-dckr-site-0000-xpresswebapp','managers-role-0000-0000-000000000000',NULL,'bbbbbbbb-good-0000-0000-000000000000'),
-(13,'member','tutorial-dckr-site-0000-xpresswebapp','managers-role-0000-0000-000000000000','managers-team-0000-0000-000000000000',NULL);
+(6,NULL,'trusted-dckr-app-0000-000000000000','provider',NULL,'aaaaaaaa-good-0000-0000-000000000000');
 
 /*!40000 ALTER TABLE `role_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -648,16 +635,7 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES 
-('aaaaaaaa-good-0000-0000-000000000000','angga', 'Angga is the admin',NULL,'default',0,'anggaa.pradipta@gmail.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,1,NULL,NULL,0,NULL),
-('bbbbbbbb-good-0000-0000-000000000000','bob','Bob is the regional manager',NULL,'default',0,'bob-the-manager@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('cccccccc-good-0000-0000-000000000000','charlie','Charlie is head of security',NULL,'default',0,'charlie-security@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('manager1-good-0000-0000-000000000000','manager1','Manager works for Bob',NULL,'default',0,'manager1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('manager2-good-0000-0000-000000000000','manager2','Manager works for Bob',NULL,'default',0,'manager2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('detective1-good-0000-0000-000000000000','detective1','Detective works for Charlie',NULL,'default',0,'detective1@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('detective2-good-0000-0000-000000000000','detective2','Detective works for Charlie',NULL,'default',0,'detective2@test.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('eve-evil-0000-0000-000000000000','eve','Eve the Eavesdropper',NULL,'default',0,'eve@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('mallory-evil-0000-0000-000000000000','mallory','Mallory the malicious attacker',NULL,'default',0,'mallory@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL),
-('rob-evil-0000-0000-000000000000','rob','Rob the Robber' ,NULL,'default',0,'rob@example.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,0,NULL,NULL,0,NULL);/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+('aaaaaaaa-good-0000-0000-000000000000','angga', 'Angga is admin',NULL,'default',0,'anggaa.pradipta@gmail.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,1,NULL,NULL,0,NULL);
 UNLOCK TABLES;
 
 --
@@ -717,13 +695,7 @@ LOCK TABLES `user_organization` WRITE;
 /*!40000 ALTER TABLE `user_organization` DISABLE KEYS */;
 INSERT INTO `user_organization` VALUES 
 (2,'owner', 'aaaaaaaa-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
-(3,'owner', 'aaaaaaaa-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
-(4,'owner', 'bbbbbbbb-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
-(5,'member','manager1-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
-(6,'member','manager2-good-0000-0000-000000000000','managers-team-0000-0000-000000000000'),
-(7,'owner', 'cccccccc-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
-(8,'member','detective1-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
-(9,'member','detective2-good-0000-0000-000000000000','security-team-0000-0000-000000000000');
+(3,'owner', 'aaaaaaaa-good-0000-0000-000000000000','managers-team-0000-0000-000000000000');
 /*!40000 ALTER TABLE `user_organization` ENABLE KEYS */;
 UNLOCK TABLES;
 

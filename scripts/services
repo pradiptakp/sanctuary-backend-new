@@ -31,7 +31,6 @@ case "${command}" in
   "start")
   stoppingContainers
   startContainers
-  export ORION_URL="http://orion-proxy:1027" 
   displayServices
   ;;
   "create")
