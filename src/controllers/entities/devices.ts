@@ -70,6 +70,35 @@ export const getDeviceDetail = async (
 };
 
 /**
+ * Get deviceDetail.
+ * @route GET /api/device/:id
+ */
+
+export const getDeviceDetailFromBoard = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const fetchRes = await axios
+      .get(
+        `${ENTITIES_BYPASS_URL}?type=Lamp,Lock,Temperature&options=keyValues&id=${req.params.id}`,
+        {
+          headers: {
+            "fiware-service": "openiot",
+            "fiware-servicepath": "/",
+          },
+        }
+      )
+      .then((response) => response.data);
+
+    res.status(200).send(fetchRes[0]);
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
  * Post switch device state.
  * @route POST /api/device/switch
  */
