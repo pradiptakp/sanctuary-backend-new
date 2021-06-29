@@ -16,7 +16,7 @@ import dotenv from "dotenv";
 const app = express();
 const server = http.createServer(app);
 dotenv.config();
-const port = process.env.PORT || 3002;
+const port = process.env.NODE_ENV === "production" ? process.env.PORT : 3002;
 
 /**
  * Create socket.io server.
@@ -41,7 +41,7 @@ io.on("connection", (socket) => {
 
 app.use(cors());
 
-app.set("port", process.env.PORT || 3001);
+app.set("port", port);
 app.use(
   fileUpload({
     createParentPath: true,
@@ -60,9 +60,7 @@ app.use(
   })
 );
 
-if (!isProduction) {
-  app.use(errorhandler());
-}
+app.use(errorhandler());
 
 app.use(express.static("public"));
 

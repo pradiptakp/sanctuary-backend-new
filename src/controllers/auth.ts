@@ -84,6 +84,8 @@ export const postLogin = async (
       userData: userDataRes.User,
     });
   } catch (err) {
+    console.log(err);
+    res.status(401).send(err);
     next(err);
   }
 };

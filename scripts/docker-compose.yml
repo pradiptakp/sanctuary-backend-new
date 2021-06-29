@@ -25,7 +25,8 @@ services:
       - mongo-db
       - orion
     networks:
-      - default
+      default:
+        ipv4_address: 172.18.1.12
     ports:
       - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}" # ${HOST}:4041
       - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}" # ${HOST}:7896
@@ -141,10 +142,11 @@ services:
       - "${BACKEND_PORT}"
     environment:
       - NODE_ENV=production
-      - ORION_URL=orion-proxy:${ORION_PROXY_PORT}
-      - ORION_BYPASS_URL=orion:${ORION_PORT}
-      - KEYROCK_URL=keyrock:${KEYROCK_PORT}
-      - IOT_AGENT_URL=iot-agent:${IOTA_NORTH_PORT}
+      - PORT=${BACKEND_PORT}
+      - ORION_URL=http://172.18.1.10:${ORION_PROXY_PORT}
+      - ORION_BYPASS_URL=http://172.18.1.9:${ORION_PORT}
+      - KEYROCK_URL=http://172.18.1.5:${KEYROCK_PORT}
+      - IOT_AGENT_URL=http://172.18.1.12:${IOTA_NORTH_PORT}
 
   # Database
   mongo-db:
