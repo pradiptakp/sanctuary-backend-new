@@ -25,7 +25,8 @@
     "build": "tsc --project ./",
     "dev": "nodemon ./src/app.ts",
     "start": "ts-node ./src/app.ts",
-    "ts-node": "ts-node --compiler-options {\"\"\"module\"\"\":\"\"\"commonjs\"\"\"}"
+    "ts-node": "ts-node --compiler-options {\"\"\"module\"\"\":\"\"\"commonjs\"\"\"}",
+    "docker:build": "docker build . -t pradiptakp/sanctuary-backend"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

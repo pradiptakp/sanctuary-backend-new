@@ -4,16 +4,12 @@
 
 export const isProduction = process.env.NODE_ENV === "production";
 
-export const KEYROCK_URL = `http://${
-  process.env.KEYROCK_URL || "localhost:3005"
-}`;
-export const ORION_URL = `http://${process.env.ORION_URL || "localhost:1027"}`;
-export const ORION_BYPASS_URL = `http://${
+export const KEYROCK_URL = `${process.env.KEYROCK_URL || "localhost:3005"}`;
+export const ORION_URL = `${process.env.ORION_URL || "localhost:1027"}`;
+export const ORION_BYPASS_URL = `${
   process.env.ORION_BYPASS_URL || "localhost:1026"
 }`;
-export const IOT_AGENT_URL = `http://${
-  process.env.IOT_AGENT_URL || "localhost:4041"
-}`;
+export const IOT_AGENT_URL = `${process.env.IOT_AGENT_URL || "localhost:4041"}`;
 
 export const REGISTRATION_URL = `${ORION_URL}/v2/registrations`;
 export const ENTITIES_URL = `${ORION_URL}/v2/entities`;
