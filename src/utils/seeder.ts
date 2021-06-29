@@ -1,4 +1,5 @@
 import axios from "axios";
+import { IOT_AGENT_URL } from "./constants";
 
 /**
  * Seeding services if first start
@@ -9,7 +10,7 @@ export const startSeed = async () => {
     const { data: services } = await axios.get<{
       count: number;
       services: any[];
-    }>(`http://${process.env.IOT_AGENT_URL}/iot/services`, {
+    }>(`${IOT_AGENT_URL}/iot/services`, {
       headers: {
         "fiware-service": "openiot",
         "fiware-servicepath": "/",
@@ -18,7 +19,7 @@ export const startSeed = async () => {
 
     if (services.count === 0) {
       await axios.post(
-        `http://${process.env.IOT_AGENT_URL}/iot/services`,
+        `${IOT_AGENT_URL}/iot/services`,
         {
           services: [
             {

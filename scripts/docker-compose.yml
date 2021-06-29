@@ -5,10 +5,11 @@ services:
     image: fiware/orion:${ORION_VERSION}
     hostname: orion
     container_name: fiware-orion
-    networks:
-      - sanctuary-services
     depends_on:
       - mongo-db
+    networks:
+      default:
+        ipv4_address: 172.18.1.9
     ports:
       - "${ORION_PORT}:${ORION_PORT}" # ${HOST}:1026
     command: -dbhost mongo-db -logLevel DEBUG
@@ -20,11 +21,11 @@ services:
     image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
     hostname: iot-agent
     container_name: fiware-iot-agent
-    networks:
-      - sanctuary-services
     depends_on:
       - mongo-db
       - orion
+    networks:
+      - default
     ports:
       - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}" # ${HOST}:4041
       - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}" # ${HOST}:7896
@@ -63,7 +64,8 @@ services:
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
-      - sanctuary-services
+      default:
+        ipv4_address: 172.18.1.5
     depends_on:
       - mysql-db
     ports:
@@ -91,7 +93,8 @@ services:
     container_name: fiware-orion-proxy
     hostname: orion-proxy
     networks:
-      - sanctuary-services
+      default:
+        ipv4_address: 172.18.1.10
     depends_on:
       - keyrock
     deploy:
@@ -122,9 +125,8 @@ services:
   sanctuary-backend:
     image: pradiptakp/sanctuary-backend
     container_name: sanctuary-backend
-    hostname: sanctuary-backend
     networks:
-      - sanctuary-services
+      - default
     depends_on:
       - orion-proxy
       - iot-agent
@@ -134,10 +136,11 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}" # ${HOST}:1027
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
     expose:
       - "${BACKEND_PORT}"
     environment:
+      - NODE_ENV=production
       - ORION_URL=orion-proxy:${ORION_PROXY_PORT}
       - ORION_BYPASS_URL=orion:${ORION_PORT}
       - KEYROCK_URL=keyrock:${KEYROCK_PORT}
@@ -148,12 +151,12 @@ services:
     image: mongo:${MONGO_DB_VERSION}
     hostname: mongo-db
     container_name: db-mongo
-    networks:
-      - sanctuary-services
     expose:
       - "${MONGO_DB_PORT}"
     ports:
       - "${MONGO_DB_PORT}:${MONGO_DB_PORT}" # ${HOST}:27017
+    networks:
+      - default
     command: --bind_ip_all --smallfiles
     volumes:
       - mongo-db:/data
@@ -167,12 +170,13 @@ services:
     image: mysql:${MYSQL_DB_VERSION}
     hostname: mysql-db
     container_name: db-mysql
-    networks:
-      - sanctuary-services
     expose:
       - "${MYSQL_DB_PORT}"
     ports:
       - "${MYSQL_DB_PORT}:${MYSQL_DB_PORT}" # ${HOST}:3306
+    networks:
+      default:
+        ipv4_address: 172.18.1.6
     environment:
       - "MYSQL_ROOT_PASSWORD_FILE=/run/secrets/my_secret_data"
       - "MYSQL_ROOT_HOST=172.18.1.5" # Allow Keyrock to access this database
@@ -183,10 +187,10 @@ services:
       - my_secret_data
 
 networks:
-  sanctuary-services:
-    # Use a custom driver
-    driver: bridge
-
+  default:
+    ipam:
+      config:
+        - subnet: 172.18.1.0/24
 volumes:
   mysql-db: ~
   mongo-db: ~

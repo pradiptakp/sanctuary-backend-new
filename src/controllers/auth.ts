@@ -32,7 +32,6 @@ export const postLogin = async (
         }
       )
       .then((response) => response.data);
-
     const loginKeyrockRes = await axios
       .post(
         LOGIN_KEYROCK_URL,
@@ -55,8 +54,6 @@ export const postLogin = async (
           };
         }) => headers
       );
-
-    console.log(loginKeyrockRes);
 
     const userDataRes = await axios
       .get<{
