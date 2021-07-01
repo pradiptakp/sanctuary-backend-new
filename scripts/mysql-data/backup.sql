@@ -71,7 +71,7 @@ CREATE TABLE `auth_token` (
 LOCK TABLES `auth_token` WRITE;
 /*!40000 ALTER TABLE `auth_token` DISABLE KEYS */;
 INSERT INTO `auth_token` VALUES 
-('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','2036-07-30 12:04:45',1,'aaaaaaaa-good-0000-0000-000000000000',NULL),
+('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','2036-07-30 12:04:45',1,'sanctuary_uuid',NULL),
 ('51f2e380-c959-4dee-a0af-380f730137c3','2036-07-30 13:02:37',1,'admin',NULL);
 /*!40000 ALTER TABLE `auth_token` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -208,7 +208,7 @@ LOCK TABLES `oauth_access_token` WRITE;
 /*!40000 ALTER TABLE `oauth_access_token` DISABLE KEYS */;
 INSERT INTO `oauth_access_token` VALUES 
 ('15682667caa4bb5ac15056fee3836b2980288bf2','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'8ca60ce9-32f9-42d6-a013-a19b3af0c13d','admin',NULL,NULL),
-('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','angga',NULL,NULL);
+('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa','2016-07-30 12:14:21',NULL,NULL,NULL,NULL,'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa','SANCTUARY_USERNAME',NULL,NULL);
 
 /*!40000 ALTER TABLE `oauth_access_token` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -522,8 +522,8 @@ INSERT INTO `role_assignment` VALUES
 (2,'member','8ca60ce9-32f9-42d6-a013-a19b3af0c13d','provider','74f5299e-3247-468c-affb-957cda03f0c4',NULL),
 (3,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'admin'),
 (4,NULL,'222eda27-958b-4f0c-a5cb-e4114fb170c3','provider',NULL,'96154659-cb3b-4d2d-afef-18d6aec0518e'),
-(5,NULL,'tutorial-dckr-site-0000-xpresswebapp','provider',NULL,'aaaaaaaa-good-0000-0000-000000000000'),
-(6,NULL,'trusted-dckr-app-0000-000000000000','provider',NULL,'aaaaaaaa-good-0000-0000-000000000000');
+(5,NULL,'tutorial-dckr-site-0000-xpresswebapp','provider',NULL,'sanctuary_uuid'),
+(6,NULL,'trusted-dckr-app-0000-000000000000','provider',NULL,'sanctuary_uuid');
 
 /*!40000 ALTER TABLE `role_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -635,7 +635,7 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES 
-('aaaaaaaa-good-0000-0000-000000000000','angga', 'Angga is admin',NULL,'default',0,'anggaa.pradipta@gmail.com','89e48c55e4e4b3b86141fb15f5e6abf70f8c32c0', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,1,NULL,NULL,0,NULL);
+('SANCTUARY_UUID','SANCTUARY_USERNAME', 'SANCTUARY_USERNAME is admin',NULL,'default',0,'SANCTUARY_EMAIL','SANCTUARY_PASSWORD', 'fbba54b6750b16e8', '2018-07-30 11:41:14',1,1,NULL,NULL,0,NULL);
 UNLOCK TABLES;
 
 --
@@ -694,8 +694,8 @@ CREATE TABLE `user_organization` (
 LOCK TABLES `user_organization` WRITE;
 /*!40000 ALTER TABLE `user_organization` DISABLE KEYS */;
 INSERT INTO `user_organization` VALUES 
-(2,'owner', 'aaaaaaaa-good-0000-0000-000000000000','security-team-0000-0000-000000000000'),
-(3,'owner', 'aaaaaaaa-good-0000-0000-000000000000','managers-team-0000-0000-000000000000');
+(2,'owner', 'sanctuary_uuid','security-team-0000-0000-000000000000'),
+(3,'owner', 'sanctuary_uuid','managers-team-0000-0000-000000000000');
 /*!40000 ALTER TABLE `user_organization` ENABLE KEYS */;
 UNLOCK TABLES;
 
