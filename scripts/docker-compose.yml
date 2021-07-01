@@ -2,7 +2,7 @@ version: "3.5"
 services:
   # Orion is the context broker
   orion:
-    image: fiware/orion:${ORION_VERSION}
+    image: fiware/orion:2.4.0
     hostname: orion
     container_name: fiware-orion
     depends_on:
@@ -11,14 +11,14 @@ services:
       default:
         ipv4_address: 172.18.1.9
     ports:
-      - "${ORION_PORT}:${ORION_PORT}" # ${HOST}:1026
+      - "1026:1026" # localhost:1026
     command: -dbhost mongo-db -logLevel DEBUG
     healthcheck:
-      test: curl --fail -s http://orion:${ORION_PORT}/version || exit 1
+      test: curl --fail -s http://orion:1026/version || exit 1
 
   # IoT-Agent is configured for the UltraLight Protocol
   iot-agent:
-    image: fiware/iotagent-ul:${ULTRALIGHT_VERSION}
+    image: fiware/iotagent-ul:1.13.0
     hostname: iot-agent
     container_name: fiware-iot-agent
     depends_on:
@@ -28,69 +28,67 @@ services:
       default:
         ipv4_address: 172.18.1.12
     ports:
-      - "${IOTA_NORTH_PORT}:${IOTA_NORTH_PORT}" # ${HOST}:4041
-      - "${IOTA_SOUTH_PORT}:${IOTA_SOUTH_PORT}" # ${HOST}:7896
+      - "4041:4041" # localhost:4041
+      - "7896:7896" # localhost:7896
     environment:
       - IOTA_CB_HOST=orion # name of the context broker to update context
-      - IOTA_CB_PORT=${ORION_PORT} # port the context broker listens on to update context
-      - IOTA_NORTH_PORT=${IOTA_NORTH_PORT}
+      - IOTA_CB_PORT=1026 # port the context broker listens on to update context
+      - IOTA_NORTH_PORT=4041
       - IOTA_REGISTRY_TYPE=mongodb #Whether to hold IoT device info in memory or in a database
       - IOTA_LOG_LEVEL=DEBUG # The log level of the IoT Agent
       - IOTA_TIMESTAMP=true # Supply timestamp information with each measurement
       - IOTA_CB_NGSI_VERSION=v2 # use NGSIv2 when sending updates for active attributes
       - IOTA_AUTOCAST=true # Ensure Ultralight number values are read as numbers not strings
       - IOTA_MONGO_HOST=mongo-db # The host name of MongoDB
-      - IOTA_MONGO_PORT=${MONGO_DB_PORT} # The port mongoDB is listening on
+      - IOTA_MONGO_PORT=27017 # The port mongoDB is listening on
       - IOTA_MONGO_DB=iotagentul # The name of the database used in mongoDB
-      - IOTA_HTTP_PORT=${IOTA_SOUTH_PORT} # The port used for device traffic over HTTP
-      - IOTA_PROVIDER_URL=http://iot-agent:${IOTA_NORTH_PORT}
+      - IOTA_HTTP_PORT=7896 # The port used for device traffic over HTTP
+      - IOTA_PROVIDER_URL=http://iot-agent:4041
       - IOTA_DEFAULT_RESOURCE=/iot/d
       # - IOTA_AUTH_ENABLED=true
       # - IOTA_AUTH_TYPE=oauth2
       # - IOTA_AUTH_HEADER=Authorization
       # - IOTA_AUTH_HOST=keyrock
-      # - IOTA_AUTH_PORT=${KEYROCK_PORT}
-      # - IOTA_AUTH_URL=http://keyrock:${KEYROCK_PORT}
+      # - IOTA_AUTH_PORT=3005
+      # - IOTA_AUTH_URL=http://keyrock:3005
       # - IOTA_AUTH_CLIENT_ID=tutorial-dckr-site-0000-xpresswebapp
       # - IOTA_AUTH_CLIENT_SECRET=tutorial-dckr-host-0000-clientsecret
       # - IOTA_AUTH_PERMANENT_TOKEN=true
       # - IOTA_AUTH_TOKEN_PATH=/oauth2/token
 
     healthcheck:
-      test: curl --fail -s http://iot-agent:${IOTA_NORTH_PORT}/iot/about || exit 1
+      test: curl --fail -s http://iot-agent:4041/iot/about || exit 1
 
   # Keyrock is an Identity Management Front-End
   keyrock:
-    image: fiware/idm:${KEYROCK_VERSION}
+    image: fiware/idm:7.8.2
     container_name: fiware-keyrock
     hostname: keyrock
     networks:
       default:
         ipv4_address: 172.18.1.5
+    expose:
+      - 3005
     depends_on:
       - mysql-db
     ports:
-      - "${KEYROCK_PORT}:${KEYROCK_PORT}" # ${HOST}:3005
+      - "3005:3005" # localhost:3005
     environment:
       - DEBUG=idm:*
       - IDM_DB_HOST=mysql-db
       - IDM_DB_PASS_FILE=/run/secrets/my_secret_data
       - IDM_DB_USER=root
-      - IDM_HOST=http://${HOST}:${KEYROCK_PORT}
-      - IDM_PORT=${KEYROCK_PORT}
-      - IDM_HTTPS_PORT=${KEYROCK_HTTPS_PORT}
-      - IDM_ADMIN_USER=alice
-      - IDM_ADMIN_EMAIL=alice-the-admin@test.com
-      - IDM_ADMIN_PASS=test
+      - IDM_HOST=http://localhost:3005
+      - IDM_PORT=3005
       - IDM_CORS_ENABLED=true
     secrets:
       - my_secret_data
     healthcheck:
-      test: curl --fail -s http://${HOST}:${KEYROCK_PORT}/version || exit 1
+      test: curl --fail -s http://localhost:3005/version || exit 1
 
   # PEP Proxy for Orion
   orion-proxy:
-    image: fiware/pep-proxy:${WILMA_VERSION}
+    image: fiware/pep-proxy:7.8.2
     container_name: fiware-orion-proxy
     hostname: orion-proxy
     networks:
@@ -102,18 +100,18 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "${ORION_PROXY_PORT}:${ORION_PROXY_PORT}" # ${HOST}:1027
+      - "1027:1027" # localhost:1027
     expose:
-      - "${ORION_PROXY_PORT}"
+      - "1027"
     environment:
       - PEP_PROXY_APP_HOST=orion
-      - PEP_PROXY_APP_PORT=${ORION_PORT}
-      - PEP_PROXY_PORT=${ORION_PROXY_PORT}
+      - PEP_PROXY_APP_PORT=1026
+      - PEP_PROXY_PORT=1027
       - PEP_PROXY_IDM_HOST=keyrock
       - PEP_PROXY_HTTPS_ENABLED=false
       - PEP_PROXY_AUTH_ENABLED=false
       - PEP_PROXY_IDM_SSL_ENABLED=false
-      - PEP_PROXY_IDM_PORT=${KEYROCK_PORT}
+      - PEP_PROXY_IDM_PORT=3005
       - PEP_PROXY_APP_ID=tutorial-dckr-site-0000-xpresswebapp
       - PEP_PROXY_USERNAME=pep_proxy_00000000-0000-0000-0000-000000000000
       - PEP_PASSWORD=test
@@ -121,7 +119,7 @@ services:
       - PEP_PROXY_MAGIC_KEY=1234
       - PEP_PROXY_PUBLIC_PATHS=/version
     healthcheck:
-      test: curl --fail -s http://orion-proxy:${ORION_PROXY_PORT}/version || exit 1
+      test: curl --fail -s http://orion-proxy:1027/version || exit 1
 
   sanctuary-backend:
     image: pradiptakp/sanctuary-backend
@@ -133,30 +131,51 @@ services:
       - iot-agent
       - keyrock
       - orion
+    networks:
+      default:
+        ipv4_address: 172.18.1.16
     deploy:
       restart_policy:
         condition: on-failure
     ports:
-      - "${BACKEND_PORT}:${BACKEND_PORT}"
+      - "3002:3002"
     expose:
-      - "${BACKEND_PORT}"
+      - "3002"
     environment:
       - NODE_ENV=production
-      - PORT=${BACKEND_PORT}
-      - ORION_URL=http://172.18.1.10:${ORION_PROXY_PORT}
-      - ORION_BYPASS_URL=http://172.18.1.9:${ORION_PORT}
-      - KEYROCK_URL=http://172.18.1.5:${KEYROCK_PORT}
-      - IOT_AGENT_URL=http://172.18.1.12:${IOTA_NORTH_PORT}
+      - PORT=3002
+      - ORION_URL=http://172.18.1.10:1027
+      - ORION_BYPASS_URL=http://172.18.1.9:1026
+      - KEYROCK_URL=http://172.18.1.5:3005
+      - IOT_AGENT_URL=http://172.18.1.12:4041
+
+  sanctuary-dashboard:
+    image: pradiptakp/sanctuary-dashboard
+    container_name: sanctuary-dashboard
+    networks:
+      - default
+    depends_on:
+      - sanctuary-backend
+    deploy:
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "3003:3003"
+    expose:
+      - "3003"
+    environment:
+      - REACT_APP_ENV=PROD
+      - REACT_APP_HOST_URL=http://172.18.1.16:3002
 
   # Database
   mongo-db:
-    image: mongo:${MONGO_DB_VERSION}
+    image: mongo:3.6
     hostname: mongo-db
     container_name: db-mongo
     expose:
-      - "${MONGO_DB_PORT}"
+      - "27017"
     ports:
-      - "${MONGO_DB_PORT}:${MONGO_DB_PORT}" # ${HOST}:27017
+      - "27017:27017" # localhost:27017
     networks:
       - default
     command: --bind_ip_all --smallfiles
@@ -164,18 +183,18 @@ services:
       - mongo-db:/data
     healthcheck:
       test: |
-        host=`hostname --ip-address || echo '${HOST}'`; 
+        host=`hostname --ip-address || echo 'localhost'`; 
         mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
 
   mysql-db:
     restart: always
-    image: mysql:${MYSQL_DB_VERSION}
+    image: mysql:5.7
     hostname: mysql-db
     container_name: db-mysql
     expose:
-      - "${MYSQL_DB_PORT}"
+      - "3306"
     ports:
-      - "${MYSQL_DB_PORT}:${MYSQL_DB_PORT}" # ${HOST}:3306
+      - "3306:3306" # localhost:3306
     networks:
       default:
         ipv4_address: 172.18.1.6
